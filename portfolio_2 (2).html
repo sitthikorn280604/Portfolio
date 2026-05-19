@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sitthikorn Chaiyapho – 3D Artist Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: #1E2420; }
+
+    /* ── Fade-in animation ── */
+    .fade-item {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .fade-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: transparent;
+      transition: all 0.4s ease;
+      padding: 0 2rem;
+    }
+    nav.scrolled {
+      background: rgba(30,36,32,0.93);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #2C332E;
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; letter-spacing: 0.12em;
+      color: #7BA897; font-weight: 600;
+    }
+    .nav-links {
+      display: flex; gap: 2.2rem;
+    }
+    .nav-links button {
+      background: none; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #B0ACA6;
+      transition: color 0.25s;
+    }
+    .nav-links button:hover { color: #7BA897; }
+
+    /* Hamburger */
+    .hamburger {
+      display: none; background: none; border: none;
+      cursor: pointer; padding: 4px; flex-direction: column;
+    }
+    .hamburger span {
+      display: block; width: 22px; height: 1.5px;
+      background: #B0ACA6; margin: 5px 0;
+    }
+    .mobile-menu {
+      display: none;
+      background: #1E2420;
+      border-top: 1px solid #2C332E;
+      padding: 1rem 2rem;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-menu button {
+      display: block; background: none; border: none;
+      cursor: pointer; padding: 0.6rem 0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #B0ACA6;
+    }
+
+    /* ── HERO ── */
+    #home {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(160deg, #1E2420 0%, #141a16 60%, #1a2420 100%);
+      position: relative; overflow: hidden; padding: 0 2rem;
+      text-align: center;
+    }
+    .hero-glow {
+      position: absolute; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(123,168,151,0.094) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-line-left {
+      position: absolute; left: 8%; top: 20%; bottom: 20%;
+      width: 1px; background: linear-gradient(to bottom, transparent, rgba(123,168,151,0.25), transparent);
+    }
+    .hero-line-right {
+      position: absolute; right: 8%; top: 20%; bottom: 20%;
+      width: 1px; background: linear-gradient(to bottom, transparent, rgba(123,168,151,0.25), transparent);
+    }
+    .hero-content {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 1s ease 0.1s, transform 1s ease 0.1s;
+    }
+    .hero-content.loaded { opacity: 1; transform: translateY(0); }
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: #7BA897;
+      margin-bottom: 1.6rem;
+      opacity: 0; transition: opacity 1s ease 0.4s;
+    }
+    .hero-eyebrow.loaded { opacity: 1; }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(4.5rem, 12vw, 10rem);
+      font-weight: 300; letter-spacing: 0.05em;
+      color: #F2F0EC; line-height: 1;
+      margin: 0 0 1.2rem;
+    }
+    .hero-divider {
+      width: 48px; height: 1px; background: #7BA897;
+      margin: 1.6rem auto;
+      opacity: 0; transition: opacity 1s ease 0.6s;
+    }
+    .hero-divider.loaded { opacity: 1; }
+    .hero-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      letter-spacing: 0.18em; color: #E8E4DC;
+      font-weight: 400; margin-bottom: 0.5rem;
+    }
+    .hero-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: #7A7872;
+    }
+    .scroll-cue {
+      position: absolute; bottom: 40px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; transition: opacity 1.2s ease 1.2s;
+    }
+    .scroll-cue.loaded { opacity: 0.5; }
+    .scroll-cue p {
+      font-family: 'DM Sans', sans-serif; font-size: 0.65rem;
+      letter-spacing: 0.2em; text-transform: uppercase; color: #7A7872;
+    }
+    .scroll-line {
+      width: 1px; height: 40px;
+      background: linear-gradient(to bottom, #7BA897, transparent);
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: flex; align-items: center; gap: 1.2rem;
+    }
+    .section-label-line {
+      width: 32px; height: 1px; background: #7BA897;
+    }
+    .section-label p {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.3em;
+      text-transform: uppercase; color: #7BA897; margin: 0;
+    }
+
+    /* ── ABOUT ── */
+    #about {
+      background: #1E2420;
+      padding: 7rem 2rem;
+    }
+    .about-inner { max-width: 1100px; margin: 0 auto; }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      margin-top: 3.5rem;
+      align-items: start;
+    }
+    .about-bio {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.1rem, 2.2vw, 1.35rem);
+      line-height: 1.85; color: #E8E4DC; font-weight: 300;
+    }
+    .skills-col { display: flex; flex-direction: column; gap: 2rem; }
+    .skill-group-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.25em;
+      text-transform: uppercase; color: #7BA897;
+      margin-bottom: 0.9rem;
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      display: inline-block; padding: 5px 14px;
+      border: 1px solid rgba(123,168,151,0.38);
+      border-radius: 3px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.74rem; letter-spacing: 0.1em;
+      color: #C4D4C0;
+      background: rgba(123,168,151,0.071);
+    }
+
+    /* ── PORTFOLIO ── */
+    #portfolio {
+      background: #161c18;
+      padding: 7rem 2rem;
+    }
+    .portfolio-inner { max-width: 1100px; margin: 0 auto; }
+    .section-h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 300; color: #F2F0EC;
+      margin: 1rem 0 2.5rem;
+    }
+    /* Tabs */
+    .tabs {
+      display: flex; gap: 0.25rem;
+      border-bottom: 1px solid #2C332E;
+      margin-bottom: 3rem;
+    }
+    .tab-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 0.7rem 1.4rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; letter-spacing: 0.12em;
+      text-transform: uppercase; color: #7A7872;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: color 0.25s;
+    }
+    .tab-btn.active {
+      color: #7BA897;
+      border-bottom-color: #7BA897;
+    }
+    /* Project Grid */
+    .proj-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .proj-card {
+      background: rgba(44,51,46,0.5);
+      border: 1px solid #2C332E;
+      border-radius: 4px; overflow: hidden;
+      transition: all 0.35s ease;
+    }
+    .proj-card:hover {
+      background: #2C332E;
+      border-color: rgba(123,168,151,0.38);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(30,36,32,0.6);
+    }
+    .proj-placeholder {
+      width: 100%; aspect-ratio: 16/10;
+      background: #2C332E;
+      border-bottom: 1px solid #2C332E;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; position: relative; overflow: hidden;
+    }
+    .proj-placeholder svg.grid-bg {
+      position: absolute; opacity: 0.1; top: 0; left: 0; width: 100%; height: 100%;
+    }
+    .proj-placeholder-icon {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(123,168,151,0.31);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; z-index: 1;
+    }
+    .proj-placeholder-text {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.6rem; letter-spacing: 0.18em;
+      color: #7A7872; text-transform: uppercase;
+      position: relative; z-index: 1;
+    }
+    .proj-body { padding: 1.4rem 1.5rem 1.5rem; }
+    .proj-header {
+      display: flex; justify-content: space-between;
+      align-items: flex-start; margin-bottom: 0.6rem;
+    }
+    .proj-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem; font-weight: 500;
+      color: #F2F0EC; margin: 0;
+    }
+    .proj-duration {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: #7BA897;
+      background: rgba(123,168,151,0.078);
+      padding: 3px 10px; border-radius: 2px;
+      white-space: nowrap; margin-left: 12px;
+    }
+    .proj-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; line-height: 1.7;
+      color: #7A7872; margin: 0;
+    }
+
+    /* ── RESUME ── */
+    #resume {
+      background: #1E2420;
+      padding: 7rem 2rem;
+      text-align: center;
+    }
+    .resume-inner { max-width: 700px; margin: 0 auto; }
+    .resume-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem; color: #7A7872;
+      line-height: 1.7; margin-bottom: 2.8rem;
+    }
+    .resume-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      padding: 0.9rem 2.4rem;
+      border: 1px solid rgba(123,168,151,0.44);
+      background: transparent;
+      color: #C4D4C0;
+      text-decoration: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-radius: 3px;
+      transition: all 0.3s ease;
+    }
+    .resume-btn:hover {
+      border-color: #7BA897;
+      background: rgba(123,168,151,0.094);
+      color: #7BA897;
+      box-shadow: 0 0 24px rgba(123,168,151,0.19);
+    }
+
+    /* ── EDUCATION ── */
+    #education {
+      background: #161c18;
+      padding: 7rem 2rem;
+    }
+    .edu-inner { max-width: 1100px; margin: 0 auto; }
+    .edu-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      margin-top: 3rem;
+    }
+    .card {
+      background: rgba(44,51,46,0.38);
+      border: 1px solid #2C332E;
+      border-radius: 4px; padding: 2rem 2.2rem;
+    }
+    .card-dot-row {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 1.4rem;
+    }
+    .card-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #7BA897; flex-shrink: 0;
+    }
+    .card-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.25em;
+      text-transform: uppercase; color: #7BA897; margin: 0;
+    }
+    .edu-degree {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem; font-weight: 500;
+      color: #F2F0EC; margin: 0 0 0.5rem; line-height: 1.4;
+    }
+    .edu-school {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; color: #9DB5A0; margin-bottom: 0.4rem;
+    }
+    .edu-years {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.75rem; color: #7A7872; letter-spacing: 0.05em;
+    }
+    .lang-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.9rem 0;
+      border-bottom: 1px solid #2C332E;
+    }
+    .lang-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; color: #F2F0EC;
+    }
+    .lang-level {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: #7A7872;
+      background: #2C332E;
+      padding: 3px 10px; border-radius: 2px;
+    }
+
+    /* ── CONTACT ── */
+    #contact {
+      background: #1E2420;
+      padding: 7rem 2rem 5rem;
+    }
+    .contact-inner { max-width: 1100px; margin: 0 auto; }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 1.2rem;
+      padding: 1.6rem 2rem;
+      background: rgba(44,51,46,0.38);
+      border: 1px solid #2C332E;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .contact-item:hover {
+      background: #2C332E;
+      border-color: rgba(123,168,151,0.31);
+    }
+    .contact-icon {
+      width: 38px; height: 38px; flex-shrink: 0;
+      border: 1px solid rgba(123,168,151,0.31);
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      color: #7BA897;
+    }
+    .contact-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #7A7872; margin: 0 0 4px;
+    }
+    .contact-value {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; color: #E8E4DC; margin: 0;
+    }
+    .footer {
+      margin-top: 5rem; padding-top: 2rem;
+      border-top: 1px solid #2C332E;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem; letter-spacing: 0.1em;
+      color: #7A7872; margin: 0;
+    }
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.15em;
+      text-transform: uppercase; color: #7A7872; margin: 0;
+    }
+
+    /* ── Project image wrapper ── */
+    .proj-img-wrap {
+      width: 100%; aspect-ratio: 16/10;
+      overflow: hidden; background: #2C332E;
+      position: relative; cursor: zoom-in;
+    }
+    .proj-img-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; transition: transform 0.45s ease;
+    }
+    .proj-img-wrap:hover img { transform: scale(1.04); }
+    .img-count-badge {
+      position: absolute; bottom: 10px; right: 10px;
+      background: rgba(30,36,32,0.88);
+      border: 1px solid rgba(123,168,151,0.55);
+      color: #C4D4C0;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.1em;
+      padding: 4px 10px; border-radius: 3px;
+      pointer-events: none;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .img-zoom-icon {
+      position: absolute; top: 10px; right: 10px;
+      width: 32px; height: 32px;
+      background: rgba(30,36,32,0.82);
+      border: 1px solid rgba(123,168,151,0.45);
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      color: #7BA897;
+      opacity: 0.85; transition: opacity 0.25s, transform 0.25s;
+      pointer-events: none;
+    }
+    .proj-img-wrap:hover .img-zoom-icon { opacity: 1; transform: scale(1.1); }
+    .proj-img-wrap-overlay {
+      position: absolute; inset: 0;
+      background: rgba(10,13,11,0);
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.3s ease;
+      pointer-events: none;
+    }
+    .proj-img-wrap-overlay span {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.7rem; letter-spacing: 0.18em;
+      text-transform: uppercase; color: #C4D4C0;
+      background: rgba(30,36,32,0.85);
+      border: 1px solid rgba(123,168,151,0.4);
+      padding: 6px 16px; border-radius: 3px;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .proj-img-wrap:hover .proj-img-wrap-overlay { background: rgba(10,13,11,0.35); }
+    .proj-img-wrap:hover .proj-img-wrap-overlay span { opacity: 1; transform: translateY(0); }
+
+    /* ── Lightbox ── */
+    #lightbox {
+      display: none;
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(10,13,11,0.93);
+      backdrop-filter: blur(10px);
+      align-items: center; justify-content: center;
+    }
+    #lightbox.open { display: flex; }
+    .lb-img-wrap {
+      position: relative;
+      max-width: min(90vw, 1000px);
+      max-height: 80vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #lb-img {
+      max-width: 100%; max-height: 80vh;
+      object-fit: contain;
+      border-radius: 3px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+    .lb-btn {
+      position: fixed; top: 50%; transform: translateY(-50%);
+      width: 44px; height: 44px;
+      background: rgba(30,36,32,0.85);
+      border: 1px solid rgba(123,168,151,0.3);
+      border-radius: 3px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #C4D4C0; transition: all 0.2s;
+    }
+    .lb-btn:hover { background: #2C332E; border-color: #7BA897; color: #7BA897; }
+    #lb-prev { left: 20px; }
+    #lb-next { right: 20px; }
+    .lb-btn.hidden { opacity: 0; pointer-events: none; }
+    #lb-close {
+      position: fixed; top: 20px; right: 20px;
+      width: 40px; height: 40px;
+      background: rgba(30,36,32,0.85);
+      border: 1px solid rgba(123,168,151,0.25);
+      border-radius: 3px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #B0ACA6; transition: all 0.2s;
+    }
+    #lb-close:hover { border-color: #7BA897; color: #7BA897; }
+    .lb-dots {
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%);
+      display: flex; gap: 8px;
+    }
+    .lb-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(123,168,151,0.3);
+      border: 1px solid rgba(123,168,151,0.4);
+      cursor: pointer; transition: background 0.2s;
+    }
+    .lb-dot.active { background: #7BA897; }
+    .lb-counter {
+      position: fixed; bottom: 28px; right: 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.68rem; letter-spacing: 0.15em;
+      color: #7A7872;
+    }
+
+  
+    @media (max-width: 720px) {
+      .about-grid { grid-template-columns: 1fr !important; gap: 2.5rem !important; }
+      .edu-grid   { grid-template-columns: 1fr !important; gap: 2rem !important; }
+      .nav-links  { display: none !important; }
+      .hamburger  { display: flex !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav id="main-nav">
+    <div class="nav-inner">
+      <span class="nav-logo">SC</span>
+      <div class="nav-links">
+        <button onclick="navScrollTo('home')">Home</button>
+        <button onclick="navScrollTo('about')">About</button>
+        <button onclick="navScrollTo('portfolio')">Portfolio</button>
+        <button onclick="navScrollTo('resume')">Resume</button>
+        <button onclick="navScrollTo('education')">Education</button>
+        <button onclick="navScrollTo('contact')">Contact</button>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <button onclick="navScrollTo('home')">Home</button>
+      <button onclick="navScrollTo('about')">About</button>
+      <button onclick="navScrollTo('portfolio')">Portfolio</button>
+      <button onclick="navScrollTo('resume')">Resume</button>
+      <button onclick="navScrollTo('education')">Education</button>
+      <button onclick="navScrollTo('contact')">Contact</button>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="home">
+    <div class="hero-glow"></div>
+    <div class="hero-line-left"></div>
+    <div class="hero-line-right"></div>
+    <div class="hero-content" id="hero-content">
+      <p class="hero-eyebrow" id="hero-eyebrow">3D Artist · Internship Application</p>
+      <h1 class="hero-title">Portfolio</h1>
+      <div class="hero-divider" id="hero-divider"></div>
+      <p class="hero-name">Sitthikorn Chaiyapho</p>
+      <p class="hero-subtitle">3D Artist Internship</p>
+    </div>
+    <div class="scroll-cue" id="scroll-cue">
+      <p>Scroll</p>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ── ABOUT ── -->
+  <section id="about">
+    <div class="about-inner">
+      <div class="fade-item">
+        <div class="section-label">
+          <div class="section-label-line"></div>
+          <p>About</p>
+        </div>
+      </div>
+      <div class="about-grid">
+        <div class="fade-item" style="transition-delay:0.1s">
+          <p class="about-bio">
+            Passionate 3D Artist seeking an internship opportunity to gain hands-on experience
+            in a professional production environment. Focused on developing skills in 3D modeling,
+            texturing, and asset creation for games. Eager to learn industry-standard production
+            pipelines and contribute high-quality assets within a collaborative team.
+          </p>
+        </div>
+        <div class="skills-col">
+          <div class="fade-item" style="transition-delay:0.15s">
+            <p class="skill-group-title">3D Skills</p>
+            <div class="tags">
+              <span class="tag">3D Modeling (Props / Environment)</span>
+              <span class="tag">UV Mapping</span>
+              <span class="tag">Texturing (PBR Workflow)</span>
+              <span class="tag">Basic Sculpting</span>
+            </div>
+          </div>
+          <div class="fade-item" style="transition-delay:0.23s">
+            <p class="skill-group-title">Software</p>
+            <div class="tags">
+              <span class="tag">Autodesk Maya</span>
+              <span class="tag">Blender</span>
+              <span class="tag">ZBrush</span>
+              <span class="tag">Substance 3D Painter</span>
+            </div>
+          </div>
+          <div class="fade-item" style="transition-delay:0.31s">
+            <p class="skill-group-title">Soft Skills</p>
+            <div class="tags">
+              <span class="tag">Fast Learner</span>
+              <span class="tag">Team Collaboration</span>
+              <span class="tag">Time Management</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PORTFOLIO ── -->
+  <section id="portfolio">
+    <div class="portfolio-inner">
+      <div class="fade-item">
+        <div class="section-label">
+          <div class="section-label-line"></div>
+          <p>Portfolio</p>
+        </div>
+      </div>
+      <div class="fade-item" style="transition-delay:0.08s">
+        <h2 class="section-h2">Selected Work</h2>
+      </div>
+      <div class="fade-item" style="transition-delay:0.12s">
+        <div class="tabs" id="tabs">
+          <button class="tab-btn active" data-tab="Personal Work" onclick="switchTab(this,'Personal Work')">Personal Work</button>
+          <button class="tab-btn" data-tab="Object" onclick="switchTab(this,'Object')">Object</button>
+          <button class="tab-btn" data-tab="Classwork" onclick="switchTab(this,'Classwork')">Classwork</button>
+        </div>
+      </div>
+      <div class="proj-grid" id="proj-grid"></div>
+    </div>
+  </section>
+
+  <!-- ── RESUME ── -->
+  <section id="resume">
+    <div class="resume-inner">
+      <div class="fade-item">
+        <div class="section-label" style="justify-content:center">
+          <div class="section-label-line"></div>
+          <p>Resume</p>
+        </div>
+      </div>
+      <div class="fade-item" style="transition-delay:0.1s">
+        <h2 class="section-h2">View My Resume</h2>
+      </div>
+      <div class="fade-item" style="transition-delay:0.15s">
+        <p class="resume-desc">
+          Download or view my full resume for a comprehensive overview of my education,
+          skills, and projects.
+        </p>
+      </div>
+      <div class="fade-item" style="transition-delay:0.2s">
+        <!-- 📄 Resume link — เปลี่ยน href ได้ที่นี่ -->
+        <a href="https://drive.google.com/file/d/16cHSsw2LWbSBdZEFui0Qzg93dyywk3q3/view"
+           target="_blank" rel="noopener" class="resume-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          View Resume
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EDUCATION ── -->
+  <section id="education">
+    <div class="edu-inner">
+      <div class="fade-item">
+        <div class="section-label">
+          <div class="section-label-line"></div>
+          <p>Education &amp; Language</p>
+        </div>
+      </div>
+      <div class="edu-grid">
+        <div class="fade-item" style="transition-delay:0.1s">
+          <div class="card">
+            <div class="card-dot-row">
+              <div class="card-dot"></div>
+              <p class="card-label">Education</p>
+            </div>
+            <h3 class="edu-degree">Bachelor's Degree in Digital Media Interactive and Games</h3>
+            <p class="edu-school">Sripatum University</p>
+            <p class="edu-years">2023 – Present</p>
+          </div>
+        </div>
+        <div class="fade-item" style="transition-delay:0.15s">
+          <div class="card">
+            <div class="card-dot-row">
+              <div class="card-dot"></div>
+              <p class="card-label">Languages</p>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">Thai</span>
+              <span class="lang-level">Native</span>
+            </div>
+            <div class="lang-row">
+              <span class="lang-name">English</span>
+              <span class="lang-level">Intermediate</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTACT ── -->
+  <section id="contact">
+    <div class="contact-inner">
+      <div class="fade-item">
+        <div class="section-label">
+          <div class="section-label-line"></div>
+          <p>Contact</p>
+        </div>
+      </div>
+      <div class="fade-item" style="transition-delay:0.08s">
+        <h2 class="section-h2">Get in Touch</h2>
+      </div>
+      <div class="contact-grid">
+        <div class="fade-item" style="transition-delay:0.1s">
+          <a href="mailto:sitthikorn.pho@gmail.com" class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-label">Email</p>
+              <p class="contact-value">sitthikorn.pho@gmail.com</p>
+            </div>
+          </a>
+        </div>
+        <div class="fade-item" style="transition-delay:0.14s">
+          <a href="tel:0935712478" class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91A16 16 0 0 0 14.09 15.91l.8-.8a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-label">Phone</p>
+              <p class="contact-value">093-571-2478</p>
+            </div>
+          </a>
+        </div>
+        <div class="fade-item" style="transition-delay:0.18s">
+          <div class="contact-item">
+            <div class="contact-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                <circle cx="12" cy="10" r="3"/>
+              </svg>
+            </div>
+            <div>
+              <p class="contact-label">Location</p>
+              <p class="contact-value">Bangkok, Thailand</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fade-item" style="transition-delay:0.25s">
+        <div class="footer">
+          <p class="footer-name">Sitthikorn Chaiyapho</p>
+          <p class="footer-copy">3D Artist · Portfolio 2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── LIGHTBOX ── -->
+  <div id="lightbox" role="dialog" aria-modal="true">
+    <button id="lb-close" onclick="closeLightbox()" aria-label="ปิด">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+    <button id="lb-prev" class="lb-btn" onclick="lbMove(-1)" aria-label="ก่อนหน้า">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"/>
+      </svg>
+    </button>
+    <div class="lb-img-wrap">
+      <img id="lb-img" src="" alt="" />
+    </div>
+    <button id="lb-next" class="lb-btn" onclick="lbMove(1)" aria-label="ถัดไป">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"/>
+      </svg>
+    </button>
+    <div class="lb-dots" id="lb-dots"></div>
+    <div class="lb-counter" id="lb-counter"></div>
+  </div>
+
+  <script>
+    // ── Colour palette (for JS use) ──
+    const C = {
+      jade: "#7BA897", sage: "#9DB5A0", sageLight: "#C4D4C0",
+      charcoal: "#1E2420", charcoalMid: "#2C332E",
+      warmGray: "#7A7872", stone: "#B0ACA6",
+      offWhite: "#F2F0EC", cream: "#E8E4DC",
+    };
+
+    // ══════════════════════════════════════════════════════════════
+    // 📁 PROJECTS DATA — แก้ไขรูปภาพได้ที่นี่
+    //
+    //  ใส่รูปได้ 1–3 รูปต่องาน โดยใช้ images: [ ... ]
+    //
+    //  ตัวอย่าง 1 รูป:
+    //    images: ["https://i.imgur.com/xxxx.jpg"]
+    //
+    //  ตัวอย่าง 3 รูป:
+    //    images: [
+    //      "https://i.imgur.com/xxxx.jpg",   // รูปหน้าปก (แสดงบนการ์ด)
+    //      "https://i.imgur.com/yyyy.jpg",   // รูปที่ 2
+    //      "https://i.imgur.com/zzzz.jpg",   // รูปที่ 3
+    //    ]
+    //
+    //  ถ้ายังไม่มีรูป: ปล่อย images: []
+    // ══════════════════════════════════════════════════════════════
+    const PROJECTS = {
+
+      // ── แท็บ: Personal Work ──────────────────────────────────────
+      "Personal Work": [
+        {
+          title: "Diamond Golem",
+          duration: "1 Weeks",
+          desc: "ตัวละครที่สร้างขึ้นใน Maya โดยเน้นรูปทรงที่ชัดเจนและโครงสร้างโมเดลที่เหมาะสำหรับงานพร้อมทำพื้นผิวและวัสดุใน Substance 3D Painter ด้วยระบบ PBR Texture เพื่อเพิ่มรายละเอียดพื้นผิวคริสตัลและบรรยากาศแฟนตาซีให้กับตัวงาน",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Golem0.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Golem.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Golem1.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Golem2.png?raw=true"
+          ]   // 🖼️ ใส่ลิงค์รูปที่นี่ เช่น ["url1", "url2"]
+        },
+        {
+          title: "Slime Gacha",
+          duration: "2 Day",
+          desc: "คาแรคเตอร์สไตล์แนว Gacha ที่สร้างขึ้นใน Maya โดยเน้นรูปทรงเรียบง่ายเหมาะสำหรับงานเกม",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Slime0.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Ref.jpg?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Slime.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Slime1.png?raw=true"
+          ]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+        {
+          title: "Cat Model",
+          duration: "2 Weeks",
+          desc: "โมเดลตัวละครที่ปั้นขึ้นใน ZBrush และ Low-Poly ใน Maya ",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Monster%20Cat.png?raw=true"]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+        
+      ],
+
+      // ── แท็บ: Object ─────────────────────────────────────────────
+      "Object": [
+        {
+          title: "Kinfe",
+          duration: "1 Days",
+          desc: "อาวุธมีดที่สร้างขึ้นใน Maya และนำไปใส่ Texture ใน Substance 3D Painter",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Knife.jpg?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Knife1.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Knife2.png?raw=true"
+          ]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+        {
+          title: "Asta Sword",
+          duration: "1 Day",
+          desc: "อาวุธดาบที่สร้างขึ้นใน Maya และนำไปใส่ Texture ใน Substance 3D Painter",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Asta%20Sword.jpg?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Asta%20Sword1.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Asta%20Sword2.png?raw=true"
+          ]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+        {
+          title: "Sword",
+          duration: "2 Days",
+          desc: "อาวุธดาบที่สร้างขึ้นใน Maya และนำไปเพิ่มรอยตำหนิของดาบใน ZBrush และนำไปใส่  Texture ใน Substance 3D Painter",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Sword.png?raw=true"]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+        {
+          title: "Ax",
+          duration: "1 Days",
+          desc: "อาวุธขวานที่สร้างขึ้นใน Maya และนำไปใส่ Texture ใน Substance 3D Painter",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Object/Ax.png?raw=true"]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+      ],
+
+      // ── แท็บ: Classwork ──────────────────────────────────────────
+      "Classwork": [
+        {
+          title: "Monster Red",
+          duration: "3 Weeks",
+          desc: "ตัวละครมอนสเตอร์ที่สร้างขึ้นในคลาสเรียนโดยปั้นใน ZBrush และนำไป Low-Poly ใน Maya และจบด้วยการใส่ Texture ใน Substance 3D Painter",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Monster%20Red1.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Monster%20Red.jpg?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/Monster%20Red2.png?raw=true",
+                  "https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Monster/UV.png?raw=true"
+          ]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+        {
+          title: "Isometric room",
+          duration: "1 Week",
+          desc: "Isometric room ที่สร้างขึ้นใน Maya และนำไปจัดฉากใน Unreal engine",
+          images: ["https://github.com/sitthikorn280604/PortFolio-3D-Artist/blob/main/Isometric%20room.png?raw=true"]   // 🖼️ ใส่ลิงค์รูปที่นี่
+        },
+      ],
+
+    };
+
+    // ── Build project cards ──
+    function buildCards(tabName) {
+      const grid = document.getElementById('proj-grid');
+      grid.innerHTML = '';
+      PROJECTS[tabName].forEach((p, i) => {
+        const card = document.createElement('div');
+        card.className = 'proj-card fade-item';
+        card.style.transitionDelay = (i * 0.07) + 's';
+
+        const imgs = Array.isArray(p.images) ? p.images.filter(u => u && u.trim()) : [];
+        const firstImg = imgs[0] || '';
+        const hasImg = firstImg !== '';
+        const count = imgs.length;
+
+        const overlayLabel = count > 1 ? 'ดูทั้ง ' + count + ' รูป' : 'ดูรูปขยาย';
+        const badgeHtml = count > 1
+          ? '<div class="img-count-badge"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg> ' + count + ' รูป</div>'
+          : '';
+        const imgHtml = hasImg
+          ? '<div class="proj-img-wrap" style="cursor:pointer" title="คลิกเพื่อดูรูปเพิ่มเติม">'
+            + '<img src="' + firstImg + '" alt="' + p.title + '" />'
+            + '<div class="proj-img-wrap-overlay"><span>' + overlayLabel + '</span></div>'
+            + badgeHtml
+            + '<div class="img-zoom-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></div>'
+            + '</div>'
+          : placeholderHTML();
+
+        card.innerHTML = `
+          ${imgHtml}
+          <div class="proj-body">
+            <div class="proj-header">
+              <h3 class="proj-title">${p.title}</h3>
+              <span class="proj-duration">${p.duration}</span>
+            </div>
+            <p class="proj-desc">${p.desc}</p>
+          </div>`;
+
+        if (hasImg) {
+          const wrap = card.querySelector('.proj-img-wrap');
+          wrap.addEventListener('click', (function(imgList) {
+            return function() { openLightbox(imgList, 0); };
+          })(imgs));
+        }
+
+        grid.appendChild(card);
+
+        requestAnimationFrame(() => {
+          setTimeout(() => card.classList.add('visible'), 30 + i * 70);
+        });
+      });
+    }
+
+    function placeholderHTML() {
+      return `<div class="proj-placeholder">
+        <svg class="grid-bg" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+              <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#7BA897" stroke-width="0.5" />
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
+        <div class="proj-placeholder-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7BA897" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="7" width="18" height="13" rx="2" />
+            <circle cx="12" cy="13.5" r="3.5" />
+            <path d="M8 7V5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2" />
+          </svg>
+        </div>
+        <p class="proj-placeholder-text">Image Coming Soon</p>
+      </div>`;
+    }
+
+    // ── Tab switching ──
+    function switchTab(btn, tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      buildCards(tabName);
+    }
+
+    // ── Nav scroll effect ──
+    window.addEventListener('scroll', () => {
+      const nav = document.getElementById('main-nav');
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    // ── Smooth scroll ──
+    function navScrollTo(id) {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+      document.getElementById('mobile-menu').classList.remove('open');
+    }
+
+    // ── Mobile menu ──
+    function toggleMenu() {
+      document.getElementById('mobile-menu').classList.toggle('open');
+    }
+
+    // ── Hero load animation ──
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.getElementById('hero-content').classList.add('loaded');
+        document.getElementById('hero-eyebrow').classList.add('loaded');
+        document.getElementById('hero-divider').classList.add('loaded');
+        document.getElementById('scroll-cue').classList.add('loaded');
+      }, 80);
+
+      // Build initial portfolio tab
+      buildCards('Personal Work');
+
+      // Intersection observer for fade-in
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.fade-item').forEach(el => obs.observe(el));
+    });
+    // ── Lightbox ──
+    let lbImages = [], lbIndex = 0;
+
+    function openLightbox(images, startIndex) {
+      lbImages = images;
+      lbIndex = startIndex;
+      document.getElementById('lightbox').classList.add('open');
+      document.body.style.overflow = 'hidden';
+      lbRender();
+    }
+
+    function closeLightbox() {
+      document.getElementById('lightbox').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function lbMove(dir) {
+      lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
+      lbRender();
+    }
+
+    function lbRender() {
+      const img = document.getElementById('lb-img');
+      img.style.opacity = '0';
+      setTimeout(() => {
+        img.src = lbImages[lbIndex];
+        img.style.opacity = '1';
+      }, 100);
+
+      // prev/next buttons
+      document.getElementById('lb-prev').classList.toggle('hidden', lbImages.length <= 1);
+      document.getElementById('lb-next').classList.toggle('hidden', lbImages.length <= 1);
+
+      // dots
+      const dotsEl = document.getElementById('lb-dots');
+      dotsEl.innerHTML = lbImages.length > 1
+        ? lbImages.map((_, i) => `<div class="lb-dot ${i === lbIndex ? 'active' : ''}" onclick="lbGoTo(${i})"></div>`).join('')
+        : '';
+
+      // counter
+      document.getElementById('lb-counter').textContent =
+        lbImages.length > 1 ? `${lbIndex + 1} / ${lbImages.length}` : '';
+    }
+
+    function lbGoTo(i) { lbIndex = i; lbRender(); }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('lightbox').classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') lbMove(-1);
+      if (e.key === 'ArrowRight') lbMove(1);
+    });
+
+    // Click backdrop to close
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+
+  </script>
+</body>
+</html>
